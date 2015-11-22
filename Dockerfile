@@ -30,9 +30,9 @@ RUN cp -R /homer-ui/* /var/www/html/
 RUN cp -R /homer-api/api /var/www/html/
 RUN chmod g+w /var/www/html/store/dashboard
 
-COPY configuration.php /var/www/html/api/configuration.php
-COPY preferences.php /var/www/html/api/preferences.php
-COPY vhost.conf /etc/httpd/conf.d/000-homer.conf
+COPY data/configuration.php /var/www/html/api/configuration.php
+COPY data/preferences.php /var/www/html/api/preferences.php
+COPY data/vhost.conf /etc/httpd/conf.d/000-homer.conf
 
 # Kamailio
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfb40d3e6508ea4c8
@@ -40,7 +40,7 @@ RUN echo "deb http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sources.l
 RUN echo "deb-src http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sources.list
 RUN apt-get update -qq && apt-get install --no-install-recommends --no-install-suggests -yqq kamailio rsyslog inotify-tools kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules && rm -rf /var/lib/apt/lists/*
 
-COPY kamailio.cfg /etc/kamailio/kamailio.cfg
+COPY data/kamailio.cfg /etc/kamailio/kamailio.cfg
 
 # Install the cron service
 RUN apt-get install cron -y
