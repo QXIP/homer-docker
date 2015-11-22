@@ -1,10 +1,12 @@
-FROM phusion/baseimage:latest
+#FROM phusion/baseimage:0.9.17
+FROM debian:jessie
 MAINTAINER L. Mangani <lorenzo.mangani@gmail.com>
 
 # Default baseimage settings
 ENV HOME /root
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
-CMD ["/sbin/my_init"]
+#RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+#CMD ["/sbin/my_init"]
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update and upgrade apt
@@ -41,7 +43,7 @@ RUN echo "deb-src http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sourc
 #RUN apt-get update -qq && apt-get install --no-install-recommends --no-install-suggests -yqq kamailio rsyslog inotify-tools kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update 
-RUN apt-get install --no-install-recommends --no-install-suggests -y kamailio rsyslog kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -f -y kamailio rsyslog kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules && rm -rf /var/lib/apt/lists/*
 
 COPY data/kamailio.cfg /etc/kamailio/kamailio.cfg
 
@@ -60,7 +62,4 @@ VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/www/html/store"]
 EXPOSE 80
 
 ENTRYPOINT ["/run.sh"]
-
-# Test run
-RUN /run.sh
 
