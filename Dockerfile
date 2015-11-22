@@ -57,3 +57,7 @@ VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/www/html/store"]
 EXPOSE 80
 
 ENTRYPOINT ["/run.sh"]
+
+# Test run
+RUN /run.sh
+
