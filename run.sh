@@ -27,10 +27,11 @@ chmod -R 0777 /var/www/html/api/tmp/
 SQL_LOCATION=/homer-api/sql
 
 echo 'Starting mysqld'
-# The sleep 1 is there to make sure that inotifywait starts up before the socket is created
+sudo mysql_install_db --user=mysql --basedir=/usr/ --ldata=/var/lib/mysql/
 mysqld_safe &
 
 echo 'Waiting for mysqld to come online'
+# The sleep 1 is there to make sure that inotifywait starts up before the socket is created
 while [ ! -x /var/run/mysqld/mysqld.sock ]; do
     sleep 1
 done
