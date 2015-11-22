@@ -55,6 +55,7 @@ RUN echo "30 3 * * * root /opt/homer_rotate > /dev/null 2>&1" > /crons.conf
 RUN crontab /crons.conf
 
 COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
 # Add persistent MySQL volumes
 VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/www/html/store"]
