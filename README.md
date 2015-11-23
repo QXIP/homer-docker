@@ -1,7 +1,7 @@
 
 ![homer](http://i.imgur.com/ViXcGAD.png)
 
-# HOMER Full Docker
+# HOMER 5 Docker
 http://sipcapture.org
 
 A simple recipe:
