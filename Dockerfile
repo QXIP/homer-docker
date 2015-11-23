@@ -12,7 +12,7 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 RUN apt-get update -qq
 RUN apt-get upgrade -y
 
-RUN apt-get install --no-install-recommends --no-install-suggests -yqq ca-certificates apache2 php5 php5-cli php5-gd php-pear php5-dev php5-mysql php5-json php-services-json git pwgen && rm -rf /var/lib/apt/lists/*
+RUN apt-get install --no-install-recommends --no-install-suggests -yqq ca-certificates apache2 libapache2-mod-php5 php5 php5-cli php5-gd php-pear php5-dev php5-mysql php5-json php-services-json git pwgen && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod php5
 
@@ -62,7 +62,7 @@ RUN chmod g+w /var/www/html/store/dashboard
 
 COPY data/configuration.php /var/www/html/api/configuration.php
 COPY data/preferences.php /var/www/html/api/preferences.php
-COPY data/vhost.conf /etc/httpd/conf.d/000-homer.conf
+COPY data/vhost.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Kamailio
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfb40d3e6508ea4c8
@@ -92,7 +92,7 @@ RUN chmod a+rx /run.sh
 VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/www/html/store"]
 
 EXPOSE 80
-EXPOSE 3306
+#EXPOSE 3306
 
 ENTRYPOINT ["/run.sh"]
 

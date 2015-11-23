@@ -14,6 +14,7 @@ DOCK_IP=127.0.0.1;
 
 # HOMER API CONFIG
 PATH_HOMER_CONFIG=/var/www/html/api/configuration.php
+chmod 775 $PATH_HOMER_CONFIG
 
 # Replace values in template
 perl -p -i -e "s/\{\{ DB_PASS \}\}/$DB_PASS/" $PATH_HOMER_CONFIG
@@ -65,7 +66,8 @@ cron -f &
 # KAMAILIO CONFIG
 export PATH_KAMAILIO_CFG=/etc/kamailio/kamailio.cfg
 
-awk '/max_while_loops=100/{print $0 RS "mpath=\"//usr/lib/x86_64-linux-gnu/kamailio/modules/\"";next}1' $PATH_KAMAILIO_CFG >> $PATH_KAMAILIO_CFG.tmp | 2&>1 >/dev/null && mv $PATH_KAMAILIO_CFG.tmp $PATH_KAMAILIO_CFG
+awk '/max_while_loops=100/{print $0 RS "mpath=\"//usr/lib/x86_64-linux-gnu/kamailio/modules/\"";next}1' $PATH_KAMAILIO_CFG >> $PATH_KAMAILIO_CFG.tmp | 2&>1 >/dev/null
+mv $PATH_KAMAILIO_CFG.tmp $PATH_KAMAILIO_CFG
 
 # Replace values in template
 perl -p -i -e "s/\{\{ LISTEN_PORT \}\}/$LISTEN_PORT/" $PATH_KAMAILIO_CFG
@@ -79,9 +81,16 @@ kamailio=$(which kamailio)
 # Test the syntax.
 $kamailio -f $PATH_KAMAILIO_CFG -c
 
+# Foreground apache.
+#enable apache mod_php without editing file
+sudo a2enmod php5
+sudo a2enmod rewrite 
+#enable php modules with editing php.ini file
+sudo php5enmod mcrypt
+
+# apachectl -DFOREGROUND
+apachectl start
+
 # Now, kick it off.
 $kamailio -f $PATH_KAMAILIO_CFG -DD -E -e
 
-# Foreground apache.
-apachectl -DFOREGROUND
-# apachectl start
