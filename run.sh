@@ -1,4 +1,5 @@
 #!/bin/sh
+# HOMER 5 Docker (http://sipcapture.org)
 # run.sh
 
 # HOMER Options, defaults
@@ -6,6 +7,7 @@ DB_USER=homer_user
 DB_PASS=homer_password
 DB_HOST=127.0.0.1
 LISTEN_PORT=9060
+
 # HOMER MySQL Options, defaults
 sqluser=root
 sqlpassword=secret
@@ -24,6 +26,7 @@ perl -p -i -e "s/\{\{ DB_USER \}\}/$DB_USER/" $PATH_HOMER_CONFIG
 # Argh permission giving me hell. Needed for legacy support.
 mkdir /var/www/html/api/tmp
 chmod -R 0777 /var/www/html/api/tmp/
+chmod -R 0775 /var/www/html/store/dashboard*
 
 # MYSQL SETUP
 SQL_LOCATION=/homer-api/sql
@@ -43,11 +46,7 @@ while [ ! -x /var/run/mysqld/mysqld.sock ]; do
     sleep 1
 done
 
-echo 'Setting root password....'
-/usr/bin/mysqladmin -u root password "$sqlpassword"
-
 echo "Creating Databases..."
-# mysql --host "$DOCK_IP" -u "$sqluser" -p"$sqlpassword" < $SQL_LOCATION/homer_databases.sql
 mysql --host "$DOCK_IP" -u "$sqluser"  < $SQL_LOCATION/homer_databases.sql
 mysql --host "$DOCK_IP" -u "$sqluser"  < $SQL_LOCATION/homer_user.sql
 
@@ -59,6 +58,9 @@ mysql --host "$DOCK_IP" -u "$sqluser"  homer_statistic < $SQL_LOCATION/schema_st
 
 # echo "Creating local DB Node..."
 mysql --host "$DOCK_IP" -u "$sqluser"  homer_configuration -e "INSERT INTO node VALUES(1,'mysql','homer_data','3306','"$DB_USER"','"$DB_PASS"','sip_capture','node1', 1);"
+
+echo 'Setting root password....'
+mysql -u root -e "SET PASSWORD = PASSWORD('$sqlpassword');" 
 
 # Start the cron service in the background for rotation
 cron -f &
@@ -81,13 +83,13 @@ kamailio=$(which kamailio)
 # Test the syntax.
 $kamailio -f $PATH_KAMAILIO_CFG -c
 
-# Foreground apache.
 #enable apache mod_php without editing file
 a2enmod php5
 a2enmod rewrite 
 #enable php modules with editing php.ini file
 # php5enmod mcrypt
 
+# Start Apache
 # apachectl -DFOREGROUND
 apachectl start
 
