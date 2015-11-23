@@ -7,9 +7,9 @@ http://sipcapture.org
 A simple recipe:
 
 * debian/jessie (base image)
-* Kamailio (sipcapture module)
-* Apache2/PHP (homer ui/api)
-* MySQL/InnoDB (homer db/data)
+* Kamailio:9060 (sipcapture module)
+* Apache2/PHP:80 (homer ui/api)
+* MySQL/InnoDB:3306 (homer db/data)
 
 Status:
 
@@ -29,5 +29,9 @@ docker pull qxip/homer-docker
 docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro lmangani/homer-docker
 ```
 
+### Test
+```
+docker run -t -i lmangani/homer-docker
+```
 
 
