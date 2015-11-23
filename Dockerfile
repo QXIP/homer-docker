@@ -44,7 +44,6 @@ RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf \
 	&& echo 'skip-host-cache\nskip-name-resolve' | awk '{ print } $1 == "[mysqld]" && c == 0 { c = 1; system("cat") }' /etc/mysql/my.cnf > /tmp/my.cnf \
 	&& mv /tmp/my.cnf /etc/mysql/my.cnf
 
-
 RUN mkdir -p /var/lib/mysql/
 RUN chmod -R 755 /var/lib/mysql/
 
@@ -58,7 +57,8 @@ RUN cp /homer-api/scripts/* /opt/
 
 RUN cp -R /homer-ui/* /var/www/html/
 RUN cp -R /homer-api/api /var/www/html/
-RUN chmod g+w /var/www/html/store/dashboard
+RUN chown -R www-data:www-data /var/www/html/store/
+RUN chmod -R 0775 /var/www/html/store/dashboard
 
 COPY data/configuration.php /var/www/html/api/configuration.php
 COPY data/preferences.php /var/www/html/api/preferences.php
@@ -91,7 +91,10 @@ RUN chmod a+rx /run.sh
 # Add persistent MySQL volumes
 VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/www/html/store"]
 
+# UI
 EXPOSE 80
+# HEP
+EXPOSE 9060
 #EXPOSE 3306
 
 ENTRYPOINT ["/run.sh"]
