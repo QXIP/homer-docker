@@ -65,7 +65,7 @@ cron -f &
 # KAMAILIO CONFIG
 export PATH_KAMAILIO_CFG=/etc/kamailio/kamailio.cfg
 
-awk '/max_while_loops=100/{print $0 RS "mpath=\"//usr/lib/x86_64-linux-gnu/kamailio/modules/\"";next}1' $PATH_KAMAILIO_CFG >> $PATH_KAMAILIO_CFG.tmp && mv $PATH_KAMAILIO_CFG.tmp $PATH_KAMAILIO_CFG
+awk '/max_while_loops=100/{print $0 RS "mpath=\"//usr/lib/x86_64-linux-gnu/kamailio/modules/\"";next}1' $PATH_KAMAILIO_CFG >> $PATH_KAMAILIO_CFG.tmp | 2&>1 >/dev/null && mv $PATH_KAMAILIO_CFG.tmp $PATH_KAMAILIO_CFG
 
 # Replace values in template
 perl -p -i -e "s/\{\{ LISTEN_PORT \}\}/$LISTEN_PORT/" $PATH_KAMAILIO_CFG
@@ -84,4 +84,4 @@ $kamailio -f $PATH_KAMAILIO_CFG -DD -E -e
 
 # Foreground apache.
 apachectl -DFOREGROUND
-#apachectl start
+# apachectl start
