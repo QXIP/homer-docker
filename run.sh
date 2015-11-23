@@ -83,10 +83,10 @@ $kamailio -f $PATH_KAMAILIO_CFG -c
 
 # Foreground apache.
 #enable apache mod_php without editing file
-sudo a2enmod php5
-sudo a2enmod rewrite 
+a2enmod php5
+a2enmod rewrite 
 #enable php modules with editing php.ini file
-sudo php5enmod mcrypt
+# php5enmod mcrypt
 
 # apachectl -DFOREGROUND
 apachectl start
