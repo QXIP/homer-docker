@@ -15,19 +15,21 @@ Status:
 
 * Initial working prototype - Testing Needed!
  
-### Pull
+### Pull latest
 ```
 docker pull qxip/homer-docker
 ```
 
-### Run
+### Run latest
 ```
 docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro lmangani/homer-docker
 ```
 
-### Test
+### Local Build & Test
 ```
-docker run -t -i lmangani/homer-docker
+git clone https://github.com/lmangani/homer-docker; cd homer-docker
+docker build --tag="qxip/homer-docker:local" ./
+docker run -t -i lmangani/homer-docker:local
 ```
 
 
