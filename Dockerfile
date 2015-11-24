@@ -70,8 +70,8 @@ RUN echo "deb http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sources.l
 RUN echo "deb-src http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sources.list
 #RUN apt-get update -qq && apt-get install --no-install-recommends --no-install-suggests -yqq kamailio rsyslog inotify-tools kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update 
-RUN apt-get install -f -y kamailio rsyslog kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules kamailio-extra-modules && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq
+RUN apt-get install -f -yqq kamailio rsyslog kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules kamailio-extra-modules && rm -rf /var/lib/apt/lists/*
 
 COPY data/kamailio.cfg /etc/kamailio/kamailio.cfg
 RUN chmod 775 /etc/kamailio/kamailio.cfg
@@ -95,6 +95,7 @@ VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/www/html/store"]
 EXPOSE 80
 # HEP
 EXPOSE 9060
+# MySQL
 #EXPOSE 3306
 
 ENTRYPOINT ["/run.sh"]
