@@ -65,11 +65,12 @@ mysql -u root -e "SET PASSWORD = PASSWORD('$sqlpassword');"
 # Reconfigure rotation
 export PATH_ROTATION_SCRIPT=/opt/homer_rotate
 chmod 775 $PATH_ROTATION_SCRIPT
-chmod +ax $PATH_ROTATION_SCRIPT
+chmod +x $PATH_ROTATION_SCRIPT
 perl -p -i -e "s/homer_user/$DB_USER/" $PATH_ROTATION_SCRIPT
 perl -p -i -e "s/homer_password/$DB_PASS/" $PATH_ROTATION_SCRIPT
 # Init rotation
-/opt/homer_rotate > /dev/null 2>&1
+/opt/homer_rotate
+#/opt/homer_rotate > /dev/null 2>&1
 
 # Start the cron service in the background for rotation
 cron -f &
