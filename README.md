@@ -13,11 +13,7 @@ A simple recipe:
 
 Status:
 
-* Initial working prototype!
-   * needs testing:
-     * cron/rotation 
-     * kamailio 
-     * ui save/load
+* Initial working prototype - Testing Needed!
  
 ### Pull
 ```
