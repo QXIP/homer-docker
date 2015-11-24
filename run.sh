@@ -62,6 +62,9 @@ mysql --host "$DOCK_IP" -u "$sqluser"  homer_configuration -e "INSERT INTO node 
 echo 'Setting root password....'
 mysql -u root -e "SET PASSWORD = PASSWORD('$sqlpassword');" 
 
+# Init rotation
+/opt/homer_rotate > /dev/null 2>&1
+
 # Start the cron service in the background for rotation
 cron -f &
 
