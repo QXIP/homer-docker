@@ -22,7 +22,7 @@ docker pull qxip/homer-docker
 
 ### Run latest
 ```
-docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro lmangani/homer-docker
+docker run -tid --name homer5 -p 80:80 -p 9060:9060 lmangani/homer-docker
 ```
 
 ### Local Build & Test
