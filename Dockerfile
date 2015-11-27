@@ -1,4 +1,3 @@
-#FROM phusion/baseimage:0.9.17
 FROM debian:jessie
 MAINTAINER L. Mangani <lorenzo.mangani@gmail.com>
 
@@ -6,33 +5,23 @@ MAINTAINER L. Mangani <lorenzo.mangani@gmail.com>
 ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN groupadd -r mysql && useradd -r -g mysql mysql
-
 # Update and upgrade apt
 RUN apt-get update -qq
-RUN apt-get upgrade -y
-
+# RUN apt-get upgrade -y
 RUN apt-get install --no-install-recommends --no-install-suggests -yqq ca-certificates apache2 libapache2-mod-php5 php5 php5-cli php5-gd php-pear php5-dev php5-mysql php5-json php-services-json git pwgen && rm -rf /var/lib/apt/lists/*
-
 RUN a2enmod php5
 
 # MySQL
-
+RUN groupadd -r mysql && useradd -r -g mysql mysql
 RUN mkdir /docker-entrypoint-initdb.d
 
-# FATAL ERROR: please install the following Perl modules before executing /usr/local/mysql/scripts/mysql_install_db:
-# File::Basename
-# File::Copy
-# Sys::Hostname
-# Data::Dumper
+# Perl + MySQL DBI
 RUN apt-get update && apt-get install -y perl libdbi-perl libclass-dbi-mysql-perl --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys A4A9406876FCBD3C456770C88C718D3B5072E1F5
-
 ENV MYSQL_MAJOR 5.6
 ENV MYSQL_VERSION 5.6.27
-
 RUN echo "deb http://repo.mysql.com/apt/debian/ jessie mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
 
 RUN apt-get update && apt-get install -y mysql-server-5.6 libmysqlclient18 && rm -rf /var/lib/apt/lists/* \
@@ -49,6 +38,7 @@ RUN chmod -R 755 /var/lib/mysql/
 
 WORKDIR /
 
+# HOMER 5
 RUN git clone --depth 1 https://github.com/sipcapture/homer-api.git /homer-api
 RUN git clone --depth 1 https://github.com/sipcapture/homer-ui.git /homer-ui
 
@@ -64,14 +54,11 @@ COPY data/configuration.php /var/www/html/api/configuration.php
 COPY data/preferences.php /var/www/html/api/preferences.php
 COPY data/vhost.conf /etc/apache2/sites-enabled/000-default.conf
 
-# Kamailio
+# Kamailio + sipcapture module
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfb40d3e6508ea4c8
 RUN echo "deb http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sources.list
 RUN echo "deb-src http://deb.kamailio.org/kamailio jessie main" >> etc/apt/sources.list
-#RUN apt-get update -qq && apt-get install --no-install-recommends --no-install-suggests -yqq kamailio rsyslog inotify-tools kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update -qq
-RUN apt-get install -f -yqq kamailio rsyslog kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules kamailio-extra-modules && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && apt-get install -f -yqq kamailio rsyslog kamailio-outbound-modules kamailio-sctp-modules kamailio-tls-modules kamailio-websocket-modules kamailio-utils-modules kamailio-mysql-modules kamailio-extra-modules && rm -rf /var/lib/apt/lists/*
 
 COPY data/kamailio.cfg /etc/kamailio/kamailio.cfg
 RUN chmod 775 /etc/kamailio/kamailio.cfg
