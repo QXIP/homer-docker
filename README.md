@@ -4,12 +4,12 @@
 # HOMER 5 Docker
 http://sipcapture.org
 
-A simple recipe:
+A simple recipe to bring up a quick, self-contained Homer5 instance:
 
 * debian/jessie (base image)
-* Kamailio:9060 (sipcapture module)
-* Apache2/PHP:80 (homer ui/api)
-* MySQL/InnoDB:3306 (homer db/data)
+* Kamailio4.x:9060 (sipcapture module)
+* Apache2/PHP5:80 (homer ui/api)
+* MySQL5.6/InnoDB:3306 (homer db/data)
 
 Status:
 
