@@ -4,4 +4,4 @@ services:
   - docker
 
 script:
-- make build
+- docker build --tag="qxip/homer-docker:local"  .
