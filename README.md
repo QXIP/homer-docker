@@ -27,9 +27,9 @@ docker run -tid --name homer5 -p 80:80 -p 9060:9060 qxip/homer-docker
 
 ### Local Build & Test
 ```
-git clone https://github.com/lmangani/homer-docker; cd homer-docker
+git clone https://github.com/qxip/homer-docker; cd homer-docker
 docker build --tag="qxip/homer-docker:local" ./
-docker run -t -i lmangani/homer-docker:local
+docker run -t -i qxip/homer-docker:local
 ```
 
 
