@@ -1,0 +1,12 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t qxip/homer-docker .
+  - docker run -d -p 80:80 -p 9060:9060 qxip/homer-docker
+  - docker ps -a
+
+script:
+- make test
