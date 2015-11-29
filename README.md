@@ -11,7 +11,9 @@ A simple recipe to bring up a quick, self-contained Homer5 instance:
 * Apache2/PHP5:80 (homer ui/api)
 * MySQL5.6/InnoDB:3306 (homer db/data)
 
-Status:
+Status: 
+
+* [![Build Status](https://travis-ci.org/QXIP/homer-docker.svg?branch=master)](https://travis-ci.org/QXIP/homer-docker)
 
 * Initial working prototype - Testing Needed!
  
