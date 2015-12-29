@@ -84,7 +84,7 @@ chmod -R 0775 /var/www/html/store/dashboard*
 SQL_LOCATION=/homer-api/sql
 DATADIR=/var/lib/mysql
 # Internal Container?
-if [ "$DB_HOST" == "127.0.0.1" ]; then
+if [ "$DB_HOST" == "$DOCK_IP" ]; then
     mysql_install_db --user=mysql --datadir="$DATADIR"
     chown -R mysql:mysql "$DATADIR"
     echo 'Starting mysqld'
