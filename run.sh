@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 # HOMER 5 Docker (http://sipcapture.org)
 # run.sh {parameters}
 
 # HOMER Options, defaults
 DB_USER=homer_user
 DB_PASS=homer_password
-DB_HOST=127.0.0.1
+DB_HOST="127.0.0.1"
 LISTEN_PORT=9060
 
 # HOMER MySQL Options, defaults
@@ -13,7 +13,7 @@ sqluser=root
 sqlpassword=secret
 
 # Container
-DOCK_IP=127.0.0.1
+DOCK_IP="127.0.0.1"
 
 show_help() {
 cat << EOF
