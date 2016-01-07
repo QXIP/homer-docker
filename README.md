@@ -24,7 +24,7 @@ docker pull qxip/homer-docker
 
 ### Run latest
 ```
-docker run -tid --name homer5 -p 80:80 -p 9060:9060 qxip/homer-docker
+docker run -tid --name homer5 -p 80:80 -p 9060:9060/udp qxip/homer-docker
 ```
 
 ### Local Build & Test
