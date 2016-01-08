@@ -80,6 +80,10 @@ mkdir /var/www/html/api/tmp
 chmod -R 0777 /var/www/html/api/tmp/
 chmod -R 0775 /var/www/html/store/dashboard*
 
+#MySQL Reconfig defaults
+PATH_MYSQL_CONFIG=/etc/mysql/my.cnf
+perl -p -i -e "s/sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES/sql_mode=NO_ENGINE_SUBSTITUTION/" $PATH_HOMER_CONFIG
+
 # MYSQL SETUP
 SQL_LOCATION=/homer-api/sql
 DATADIR=/var/lib/mysql
