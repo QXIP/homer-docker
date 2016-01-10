@@ -66,10 +66,11 @@ RUN chmod 775 /etc/kamailio/kamailio.cfg
 RUN ln -s /usr/lib64 /usr/lib/x86_64-linux-gnu/
 
 # Install the cron service
+RUN touch /var/log/cron.log
 RUN apt-get install cron -y
 
 # Add our crontab file
-RUN echo "30 3 * * * root /opt/homer_rotate > /dev/null 2>&1" > /crons.conf
+RUN echo "30 3 * * * /opt/homer_rotate >> /var/log/cron.log 2>&1" > /crons.conf
 RUN crontab /crons.conf
 
 COPY run.sh /run.sh
