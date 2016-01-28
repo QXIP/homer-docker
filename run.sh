@@ -85,37 +85,71 @@ PATH_MYSQL_CONFIG=/etc/mysql/my.cnf
 perl -p -i -e "s/sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES/sql_mode=NO_ENGINE_SUBSTITUTION/" $PATH_MYSQL_CONFIG
 sed '/\[mysqld\]/a max_connections = 1024\' -i $PATH_MYSQL_CONFIG
 
+
 # MYSQL SETUP
 SQL_LOCATION=/homer-api/sql
 DATADIR=/var/lib/mysql
-# Internal Container?
-if [ "$DB_HOST" == "$DOCK_IP" ]; then
-    mysql_install_db --user=mysql --datadir="$DATADIR"
-    chown -R mysql:mysql "$DATADIR"
-    echo 'Starting mysqld'
-    #mysqld_safe &
-    mysqld &
-    #echo 'Waiting for mysqld to come online'
-    while [ ! -x /var/run/mysqld/mysqld.sock ]; do
-        sleep 1
-    done
 
-    echo "Creating Databases..."
-    mysql --host "$DB_HOST" -u "$sqluser" < $SQL_LOCATION/homer_databases.sql
-    mysql --host "$DB_HOST" -u "$sqluser" < $SQL_LOCATION/homer_user.sql
-    
-    mysql --host "$DB_HOST" -u "$sqluser" -e "GRANT ALL ON *.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS'; FLUSH PRIVILEGES;";
-    echo "Creating Tables..."
-    mysql --host "$DB_HOST" -u "$sqluser" homer_data < $SQL_LOCATION/schema_data.sql
-    mysql --host "$DB_HOST" -u "$sqluser" homer_configuration < $SQL_LOCATION/schema_configuration.sql
-    mysql --host "$DB_HOST" -u "$sqluser" homer_statistic < $SQL_LOCATION/schema_statistic.sql
-    
-    # echo "Creating local DB Node..."
-    mysql --host "$DB_HOST" -u "$sqluser" homer_configuration -e "INSERT INTO node VALUES(1,'mysql','homer_data','3306','"$DB_USER"','"$DB_PASS"','sip_capture','node1', 1);"
-    
-    echo 'Setting root password....'
-    mysql -u root -e "SET PASSWORD = PASSWORD('$sqlpassword');" 
-        
+# Handy-dandy MySQL run function
+function MYSQL_RUN () {
+
+  chown -R mysql:mysql "$DATADIR"    
+
+  echo 'Starting mysqld'
+  mysqld &
+  #echo 'Waiting for mysqld to come online'
+  while [ ! -x /var/run/mysqld/mysqld.sock ]; do
+      sleep 1
+  done
+
+}
+
+# MySQL data loading function
+function MYSQL_INITIAL_DATA_LOAD () {
+  echo "Beginning initial data load...."
+
+  chown -R mysql:mysql "$DATADIR"
+  mysql_install_db --user=mysql --datadir="$DATADIR"
+
+  MYSQL_RUN
+
+  echo "Creating Databases..."
+  mysql --host "$DB_HOST" -u "$sqluser" < $SQL_LOCATION/homer_databases.sql
+  mysql --host "$DB_HOST" -u "$sqluser" < $SQL_LOCATION/homer_user.sql
+  
+  mysql --host "$DB_HOST" -u "$sqluser" -e "GRANT ALL ON *.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS'; FLUSH PRIVILEGES;";
+  echo "Creating Tables..."
+  mysql --host "$DB_HOST" -u "$sqluser" homer_data < $SQL_LOCATION/schema_data.sql
+  mysql --host "$DB_HOST" -u "$sqluser" homer_configuration < $SQL_LOCATION/schema_configuration.sql
+  mysql --host "$DB_HOST" -u "$sqluser" homer_statistic < $SQL_LOCATION/schema_statistic.sql
+  
+  # echo "Creating local DB Node..."
+  mysql --host "$DB_HOST" -u "$sqluser" homer_configuration -e "INSERT INTO node VALUES(1,'mysql','homer_data','3306','"$DB_USER"','"$DB_PASS"','sip_capture','node1', 1);"
+  
+  echo 'Setting root password....'
+  mysql -u root -e "SET PASSWORD = PASSWORD('$sqlpassword');" 
+
+  echo "Homer initial data load complete" > $DATADIR/.homer_initialized
+
+
+}
+
+# This is our handler to determine if we're running mysql internal to this container
+# We also bootstrap the data by initially loading it if it's not there.
+
+if [ "$DB_HOST" == "$DOCK_IP" ]; then
+
+    # If we're running an internal container, we want to see if data is already installed...
+    # That is, we don't want to overwrite what's there, or spend the time initializing.
+    # In the initialization we drop a .homer_initialized file as a semaphore, and we load based on its presence.
+    if [[ ! -f $DATADIR/.homer_initialized ]]; then 
+      # Run the load data function if that table doesn't exist
+      MYSQL_INITIAL_DATA_LOAD
+    else
+      echo "Found existing data..."
+      MYSQL_RUN
+    fi
+
     # Reconfigure rotation
     export PATH_ROTATION_SCRIPT=/opt/homer_rotate
     chmod 775 $PATH_ROTATION_SCRIPT
