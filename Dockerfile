@@ -1,5 +1,6 @@
 FROM debian:jessie
 MAINTAINER L. Mangani <lorenzo.mangani@gmail.com>
+# v.5.02
 
 # Default baseimage settings
 ENV HOME /root
