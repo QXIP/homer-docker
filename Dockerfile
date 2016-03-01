@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Update and upgrade apt
 RUN apt-get update -qq
 # RUN apt-get upgrade -y
-RUN apt-get install --no-install-recommends --no-install-suggests -yqq ca-certificates apache2 libapache2-mod-php5 php5 php5-cli php5-gd php-pear php5-dev php5-mysql php5-json php-services-json git pwgen && rm -rf /var/lib/apt/lists/*
+RUN apt-get install --no-install-recommends --no-install-suggests -yqq ca-certificates apache2 libapache2-mod-php5 php5 php5-cli php5-gd php-pear php5-dev php5-mysql php5-json php-services-json git wget pwgen && rm -rf /var/lib/apt/lists/*
 RUN a2enmod php5
 
 # MySQL
@@ -65,6 +65,9 @@ COPY data/kamailio.cfg /etc/kamailio/kamailio.cfg
 RUN chmod 775 /etc/kamailio/kamailio.cfg
 
 RUN ln -s /usr/lib64 /usr/lib/x86_64-linux-gnu/
+
+# GeoIP (http://dev.maxmind.com/geoip/legacy/geolite/)
+RUN mkdir /usr/share/GeoIP && cd /usr/share/GeoIP && wget -N -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && gunzip GeoLiteCity.dat.gz
 
 # Install the cron service
 RUN touch /var/log/cron.log
