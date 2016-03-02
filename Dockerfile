@@ -67,7 +67,7 @@ RUN chmod 775 /etc/kamailio/kamailio.cfg
 RUN ln -s /usr/lib64 /usr/lib/x86_64-linux-gnu/
 
 # GeoIP (http://dev.maxmind.com/geoip/legacy/geolite/)
-RUN mkdir /usr/share/GeoIP && cd /usr/share/GeoIP && wget -N -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && gunzip GeoLiteCity.dat.gz
+RUN cd /usr/share/GeoIP && wget -N -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && gunzip GeoLiteCity.dat.gz
 
 # Install the cron service
 RUN touch /var/log/cron.log
